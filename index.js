@@ -1,5 +1,7 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+var fs = require('fs')
 
 let persons = [  
 	{    
@@ -30,6 +32,13 @@ var newDate = new Date(now)
 
 
 app.use(express.json())
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
+
+morgan.token('body', (req, res) => {
+	return JSON.stringify(req.body)
+  })
+
 
 app.get('/', (req, res) => {
 	res.send('<h1>Hello World!</h1>')
@@ -82,7 +91,7 @@ app.post('/api/persons', (request, response) => {
 		id: generateId(),
 	}
 
-	const name_already_exists = persons.find(person => person.name === body.name)
+	const name_already_exists = persons.find(person => person.name.toUpperCase() === body.name.toUpperCase())
 	
 	if (name_already_exists) {
 		return response.status(400).json({
