@@ -3,6 +3,8 @@ const morgan = require('morgan')
 const app = express()
 var fs = require('fs')
 const cors = require('cors')
+require('dotenv').config()
+const Person = require('./models/person')
 
 app.use(cors())
 
@@ -33,8 +35,6 @@ var now =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()
 
 var newDate = new Date(now)
 
-
-
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 app.use(express.static('build'))
@@ -49,8 +49,10 @@ app.get('/api', (req, res) => {
   })
 
 app.get('/api/persons', (req, res) => {
+	Person.find({}).then(persons => {
 	res.json(persons)
   })
+})
 
 app.get('/api/info', (req, res) => {
 	res.send('<p> Phonebook has info for ' + total + 
@@ -89,26 +91,22 @@ app.post('/api/persons', (request, response) => {
 		})
 	}
 
-	const person = {
+	const person = new Person({
 		name: body.name,
 		number: body.number,
 		id: generateId(),
-	}
+	})
 
-	const name_already_exists = persons.find(person => person.name.toUpperCase() === body.name.toUpperCase())
 	
-	if (name_already_exists) {
-		return response.status(400).json({
-			error:'name must be unique'
+		person.save().then(savedPerson => {
+			response.json(savedPerson)
 		})
-	} else {
-		persons = persons.concat(person)
-		response.json(person)
-	}
 
 })
 
-const PORT = process.env.PORT || 3001
+
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`)
   })
