@@ -33,8 +33,12 @@ var now =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()
 
 var newDate = new Date(now)
 
+
+
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
+app.use(express.static('build'))
+
 
 morgan.token('body', (req, res) => {
 	return JSON.stringify(req.body)
@@ -103,7 +107,6 @@ app.post('/api/persons', (request, response) => {
 	}
 
 })
-
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
