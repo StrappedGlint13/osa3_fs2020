@@ -8,27 +8,7 @@ const Person = require('./models/person')
 
 app.use(cors())
 
-let persons = [  
-	{    
-	name: "Arto Hellas",    
-	number: "040-123456",    
-	id: 1  },  
-	{    
-	name: "Ada Lovelace",    
-	number: "39-44-5323523",    
-	id: 2   },  
-	{    
-	name: "Dan abramov",    
-	number: "12-43-234345",    
-	id: 3  },
- 	{
-    name: "Mary Poppendieck",
-    numbeid: "39-23-6423122",
-    id: 4
-    }
-]
 
-const total = persons.reduce((sum, p) => sum + 1, 0)
 var date = new Date()
 var now =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
@@ -55,6 +35,7 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/info', (req, res) => {
+	Person.
 	res.send('<p> Phonebook has info for ' + total + 
 	' people </p>' + newDate)
 })
@@ -103,11 +84,26 @@ app.post('/api/persons', (request, response) => {
 	})
 
 	
-		person.save().then(savedPerson => {
-			response.json(savedPerson)
-		})
+	person.save().then(savedPerson => {
+		response.json(savedPerson)
+	})
 
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+	const body = request.body
+  
+	const person = {
+	  name: body.name,
+	  number: body.number,
+	}
+  
+	Person.findByIdAndUpdate(request.params.id, person, { new: true })
+	  .then(updatedPerson => {
+		response.json(updatedPerson.toJSON())
+	  })
+	  .catch(error => next(error))
+  })
 
 const unknownEndpoint = (request, response) => {
 	response.status(404).send({ error: 'unknown endpoint' })
