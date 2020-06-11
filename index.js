@@ -35,9 +35,11 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/info', (req, res) => {
-	Person.
-	res.send('<p> Phonebook has info for ' + total + 
-	' people </p>' + newDate)
+	Person.count().then(count => {
+		res.send(`Phonebook has info for ${count} people ` 
+		+ newDate)
+	})
+	
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -54,8 +56,8 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response) => {
 	Person.findByIdAndRemove(request.params.id)
-	.then(note => {
-		response.json(note)
+	.then(person => {
+		response.json(person)
 	  })
 	  .catch(error => {
 		console.log(error)
