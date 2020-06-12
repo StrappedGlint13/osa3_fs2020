@@ -27,22 +27,22 @@ const person = new Person({
 })
 
 if (process.argv.length === 3) {
-console.log(`phonebook:`)
-Person
-  .find({})
-  .then(persons => {
-    persons.forEach(person => {
-      console.log(`${person.name} ${person.number}`)
-       
+  console.log('phonebook:')
+  Person
+    .find({})
+    .then(persons => {
+      persons.forEach(person => {
+        console.log(`${person.name} ${person.number}`)
+
+      })
+      mongoose.connection.close()
+      process.exit(1)
     })
-    mongoose.connection.close()
-    process.exit(1)
-  })
 }
 
 if (process.argv.length > 3) {
-person.save().then(response => {
-  console.log('person saved!')
-  mongoose.connection.close()
-})
+  person.save().then(response => {
+    console.log('person saved!')
+    mongoose.connection.close()
+  })
 }
